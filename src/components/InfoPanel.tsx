@@ -1,4 +1,3 @@
-import React from 'react';
 import { Info } from 'lucide-react';
 
 interface InfoPanelProps {
@@ -9,7 +8,7 @@ interface InfoPanelProps {
 export function InfoPanel({ showInfo, setShowInfo }: InfoPanelProps) {
   return (
     <>
-      <button 
+      <button
         onClick={() => setShowInfo(!showInfo)}
         className="absolute right-0 text-gray-500 hover:text-indigo-600 transition-colors"
       >
@@ -18,7 +17,7 @@ export function InfoPanel({ showInfo, setShowInfo }: InfoPanelProps) {
 
       {showInfo && (
         <div className="mb-6 p-4 bg-indigo-50 rounded-lg text-sm text-gray-700">
-          <p>The normal distribution is a fundamental probability distribution that appears in many natural phenomena. 
+          <p>The normal distribution is a fundamental probability distribution that appears in many natural phenomena.
              The area between the bounds represents the probability of a random variable falling within that range.</p>
           <ul className="mt-2 list-disc list-inside space-y-1">
             <li>Mean (μ) determines the center of the distribution</li>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Share2 } from 'lucide-react';
 import { InfoPanel } from './components/InfoPanel';
 import { RangeSlider } from './components/RangeSlider';

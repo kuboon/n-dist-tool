@@ -1,4 +1,3 @@
-import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 interface DataPoint {
@@ -14,7 +13,7 @@ interface DistributionChartProps {
 
 export function DistributionChart({ data, lowerBound, upperBound }: DistributionChartProps) {
   const formatXAxis = (value: number) => `${value}σ`;
-  
+
   const rangedData = data.map(x=>({
     sigma: x.sigma,
     y: x.y,
@@ -26,15 +25,15 @@ export function DistributionChart({ data, lowerBound, upperBound }: Distribution
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={rangedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-          <XAxis 
-            dataKey="sigma" 
+          <XAxis
+            dataKey="sigma"
             tickFormatter={formatXAxis}
             stroke="#6B7280"
             domain={[-4, 4]}
             ticks={[-4, -3, -2, -1, 0, 1, 2, 3, 4]}
           />
           <YAxis stroke="#6B7280" />
-          <Tooltip 
+          <Tooltip
             labelFormatter={(value) => `${value}σ`}
             formatter={(value: number) => [value.toFixed(4), 'Probability Density']}
             contentStyle={{
@@ -78,7 +77,6 @@ export function DistributionChart({ data, lowerBound, upperBound }: Distribution
               fill: '#4F46E5',
               fontSize: 12,
             }}
-            isAnimationActive={false}
           />
           <ReferenceLine
             x={upperBound}
@@ -91,7 +89,6 @@ export function DistributionChart({ data, lowerBound, upperBound }: Distribution
               fill: '#4F46E5',
               fontSize: 12,
             }}
-            isAnimationActive={false}
           />
         </AreaChart>
       </ResponsiveContainer>

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface Preset {
   label: string;
   mean: number;
@@ -37,7 +35,7 @@ export function PresetSelector({
           const preset = presets.find((p) => p.label === e.target.value);
           if (preset) onSelect(preset);
         }}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400
                  focus:border-transparent transition-colors duration-200 ease-in-out appearance-none
                  bg-white"
       >
