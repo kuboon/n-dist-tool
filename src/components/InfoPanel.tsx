@@ -16,7 +16,7 @@ export function InfoPanel({ showInfo, setShowInfo }: InfoPanelProps) {
       </button>
 
       {showInfo && (
-        <div className="mb-6 p-4 bg-indigo-50 rounded-lg text-sm text-gray-700">
+        <div className="mb-6 p-4 bg-indigo-50 rounded-lg text-sm text-gray-700 absolute right-6 top-1 z-10">
           <p>The normal distribution is a fundamental probability distribution that appears in many natural phenomena.
              The area between the bounds represents the probability of a random variable falling within that range.</p>
           <ul className="mt-2 list-disc list-inside space-y-1">
