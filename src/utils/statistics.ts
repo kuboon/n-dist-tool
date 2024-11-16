@@ -1,4 +1,14 @@
-export function normalPDF(x: number, mean: number = 0, stdDev: number = 1): number {
+export const bellPoints = (()=>{
+  const points = [];
+  for (let x = -4; x <= 4; x += 0.1) {
+    points.push({
+      sigma: Number(x.toFixed(1)),
+      y: normalPDF(x),
+    });
+  }
+  return points;
+})()
+function normalPDF(x: number, mean: number = 0, stdDev: number = 1): number {
   const coefficient = 1 / (stdDev * Math.sqrt(2 * Math.PI));
   const exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(stdDev, 2));
   return coefficient * Math.exp(exponent);

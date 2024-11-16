@@ -11,8 +11,8 @@ interface NumberInputProps {
 
 export function NumberInput({ label, value, onChange, min, max, step = 1 }: NumberInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    if (!isNaN(newValue)) {
+    const newValue = Number.parseInt(e.target.value);
+    if (!Number.isNaN(newValue)) {
       onChange(newValue);
     }
   };

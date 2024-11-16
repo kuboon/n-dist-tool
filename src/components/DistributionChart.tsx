@@ -219,6 +219,7 @@ export function DistributionChart({ data, lowerBound, upperBound }: Distribution
         tooltip.classed('hidden', true);
       });
 
+    return () => { tooltip.remove() }
   }, [data, lowerBound, upperBound]);
 
   return (

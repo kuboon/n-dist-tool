@@ -6,7 +6,7 @@ export interface DistributionParams {
 }
 
 export function saveToHash(params: DistributionParams): void {
-  const str = new URLSearchParams(params as any);
+  const str = new URLSearchParams(params as never);
   window.history.replaceState(null, '', `#${str}`);
 }
 

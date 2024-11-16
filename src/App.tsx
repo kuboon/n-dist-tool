@@ -1,12 +1,14 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Share2 } from 'lucide-react';
-import { InfoPanel } from './components/InfoPanel';
-import { RangeSlider } from './components/RangeSlider';
 import { DistributionChart } from './components/DistributionChart';
-import { normalPDF, normalCDF } from './utils/statistics';
+import { InfoPanel } from './components/InfoPanel';
 import { NumberInput } from './components/NumberInput';
 import { PresetSelector, Preset } from './components/PresetSelector';
+import { RangeSlider } from './components/RangeSlider';
 import { saveToHash, type DistributionParams } from './utils/hashSync';
+import { normalCDF, bellPoints } from './utils/statistics';
+import { useDebouncedEffect } from './utils/useDebouncedEffect';
+
+import { useState, useMemo } from 'react';
+import { Share2 } from 'lucide-react';
 
 const DISTRIBUTION_PRESETS: Preset[] = [
   { label: 'Standard Normal', mean: 0, stdDev: 1 },
@@ -23,9 +25,9 @@ function App({ params }: { params: DistributionParams }) {
   const [showShareToast, setShowShareToast] = useState(false);
 
   // Save state to URL hash whenever parameters change
-  useEffect(() => {
+  useDebouncedEffect(() => {
     saveToHash({ mean, stdDev, lowerBound, upperBound });
-  }, [mean, stdDev, lowerBound, upperBound]);
+  }, [mean, stdDev, lowerBound, upperBound], 100);
 
   const handlePresetSelect = (preset: Preset) => {
     setMean(preset.mean);
@@ -42,17 +44,7 @@ function App({ params }: { params: DistributionParams }) {
     }
   };
 
-  const data = useMemo(() => {
-    const points = [];
-    for (let x = -4; x <= 4; x += 0.1) {
-      points.push({
-        sigma: Number(x.toFixed(1)),
-        y: normalPDF(x),
-      });
-    }
-    return points;
-  }, []);
-
+  const data = bellPoints
   const cumulativePercentage = useMemo(() => {
     const lowerCDF = normalCDF(lowerBound);
     const upperCDF = normalCDF(upperBound);
