@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { bellPoints } from "../utils/statistics.ts";
 
 interface DataPoint {
   sigma: number;
@@ -6,8 +7,7 @@ interface DataPoint {
 }
 
 interface DistributionChartProps {
-  document: { createElement: (tagName: string) => unknown };
-  data: DataPoint[];
+  document: { createElement: (tagName: string) => HTMLElement };
   lowerBound: number;
   upperBound: number;
   width: number;
@@ -15,7 +15,7 @@ interface DistributionChartProps {
 }
 
 export function DistributionChartSvg(
-  { document, data, lowerBound, upperBound, width, height }:
+  { document, lowerBound, upperBound, width, height }:
     DistributionChartProps,
 ) {
   // Set up dimensions
@@ -28,6 +28,7 @@ export function DistributionChartSvg(
   const chartW = width - margin.left - margin.right;
   const chartH = height - margin.top - margin.bottom;
 
+  const data = bellPoints
   // Set up scales
   const x = d3.scaleLinear()
     .domain([-4, 4])

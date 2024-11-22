@@ -1,13 +1,13 @@
-import { DistributionChart } from './components/DistributionChart';
-import { InfoPanel } from './components/InfoPanel';
-import { NumberInput } from './components/NumberInput';
-import { PresetSelector, Preset } from './components/PresetSelector';
-import { RangeSlider } from './components/RangeSlider';
-import { saveToHash, type DistributionParams } from './utils/hashSync';
-import { normalCDF, bellPoints } from './utils/statistics';
-import { useDebouncedEffect } from './utils/useDebouncedEffect';
+import { DistributionChart } from './components/DistributionChart.tsx';
+import { InfoPanel } from './components/InfoPanel.tsx';
+import { NumberInput } from './components/NumberInput.tsx';
+import { PresetSelector, Preset } from './components/PresetSelector.tsx';
+import { RangeSlider } from './components/RangeSlider.tsx';
+import { saveToHash, type DistributionParams } from './utils/hashSync.ts';
+import { normalCDF } from './utils/statistics.ts';
+import { useDebouncedEffect } from './utils/useDebouncedEffect.ts';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Share2 } from 'lucide-react';
 
 const DISTRIBUTION_PRESETS: Preset[] = [
@@ -36,7 +36,7 @@ function App({ params }: { params: DistributionParams }) {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(globalThis.location.href);
       setShowShareToast(true);
       setTimeout(() => setShowShareToast(false), 2000);
     } catch (err) {
@@ -44,7 +44,6 @@ function App({ params }: { params: DistributionParams }) {
     }
   };
 
-  const data = bellPoints
   const cumulativePercentage = useMemo(() => {
     const lowerCDF = normalCDF(lowerBound);
     const upperCDF = normalCDF(upperBound);
@@ -131,7 +130,6 @@ function App({ params }: { params: DistributionParams }) {
             </div>
 
             <DistributionChart
-              data={data}
               lowerBound={lowerBound}
               upperBound={upperBound}
             />
