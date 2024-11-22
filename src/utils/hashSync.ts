@@ -7,12 +7,12 @@ export interface DistributionParams {
 
 export function saveToHash(params: DistributionParams): void {
   const str = new URLSearchParams(params as never);
-  window.history.replaceState(null, '', `#${str}`);
+  globalThis.history.replaceState(null, '', `#${str}`);
 }
 
 export function loadFromHash(): DistributionParams | null {
   try {
-    const hash = window.location.hash.slice(1);
+    const hash = globalThis.location.hash.slice(1);
     if (!hash) return null;
 
     const params_ = new URLSearchParams(hash);

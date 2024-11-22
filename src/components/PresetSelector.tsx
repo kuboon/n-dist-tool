@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface Preset {
   label: string;
   mean: number;
@@ -27,7 +29,7 @@ export function PresetSelector({
   return (
     <div>
       <label className="block text-gray-700 font-medium mb-2">
-        Distribution Preset
+        プリセット
       </label>
       <select
         value={getCurrentValue()}

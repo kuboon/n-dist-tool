@@ -1,10 +1,5 @@
-import * as d3 from "d3";
 import { bellPoints } from "../utils/statistics.ts";
-
-interface DataPoint {
-  sigma: number;
-  y: number;
-}
+import * as d3 from "d3";
 
 interface DistributionChartProps {
   document: { createElement: (tagName: string) => HTMLElement };
@@ -15,8 +10,7 @@ interface DistributionChartProps {
 }
 
 export function DistributionChartSvg(
-  { document, lowerBound, upperBound, width, height }:
-    DistributionChartProps,
+  { document, lowerBound, upperBound, width, height }: DistributionChartProps,
 ) {
   // Set up dimensions
   const margin = { top: 40, right: 40, bottom: 40, left: 60 };
@@ -28,92 +22,72 @@ export function DistributionChartSvg(
   const chartW = width - margin.left - margin.right;
   const chartH = height - margin.top - margin.bottom;
 
-  const data = bellPoints
+  const data = bellPoints;
+
   // Set up scales
   const x = d3.scaleLinear()
     .domain([-4, 4])
     .range([margin.left, width - margin.right]);
-
   const y = d3.scaleLinear()
-    .domain([0, d3.max(data, (d) => d.y) as number])
+    .domain([0, d3.max(data, (d) => d[1]) as number])
     .range([height - margin.bottom, margin.top]);
 
-  // Create line generator
-  const line1 = d3.line<DataPoint>()
-    .x((d) => x(d.sigma))
-    .y((d: DataPoint) => y(d.y))
-    .curve(d3.curveBasis);
+  // axis
+  {
+    const g = svg.append("g")
+      .style("stroke", "#e5e7eb")
+      .style("stroke-opacity", 0.5)
+      .style("color", "#6b7280");
 
-  // Create area generator for the selected range
-  const area1 = d3.area<DataPoint>()
-    .x((d) => x(d.sigma))
-    .y0(height - margin.bottom)
-    .y1((d) => y(d.y))
-    .curve(d3.curveBasis);
+    // Add X-axis
+    g.append("g")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(
+        d3.axisBottom(x)
+          .ticks(8)
+          .tickFormat((d) => `${d}σ`)
+          .tickSize(-chartH),
+      );
 
-  // Add X-axis
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(
-      d3.axisBottom(x)
-        .ticks(8)
-        .tickFormat((d) => `${d}σ`)
-        .tickSize(-chartH),
-    )
-    .style("stroke", "#e5e7eb")
-    .style("stroke-opacity", 0.5)
-    .style("color", "#6b7280")
-    .selectAll("text")
-    .style("font-size", "12px");
-
-  // Add Y-axis
-  svg
-    .append("g")
-    .attr("transform", `translate(${margin.left}, 0)`)
-    .call(
-      d3.axisLeft(y)
-        .ticks(5)
-        .tickFormat((d) => `${d}`)
-        .tickSize(-chartW),
-    )
-    .style("stroke", "#e5e7eb")
-    .style("stroke-opacity", 0.5)
-    .style("color", "#6b7280")
-    .selectAll("text")
-    .style("font-size", "12px");
+    // Add Y-axis
+    g.append("g")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(
+        d3.axisLeft(y)
+          .ticks(5)
+          .tickSize(-chartW),
+      );
+  }
 
   {
     const g = svg.append("g");
-    // Add the distribution line
-    g
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "#6366f1")
-      .attr("stroke-width", 2)
-      .attr("d", line1);
 
     // Add the full distribution area (gray)
-    g
-      .append("path")
-      .datum(data)
-      .attr("fill", "#e5e7eb")
+    const line = d3.line()
+      .x((d) => x(d[0]))
+      .y((d) => y(d[1]))
+      .curve(d3.curveBasis);
+    g.append("path")
+      .attr("fill", "#ccd7eb")
       .attr("fill-opacity", 0.3)
-      .attr("stroke", "none")
-      .attr("d", area1);
+      .attr("stroke", "#6366f1")
+      .attr("stroke-width", 2)
+      .attr("d", line(data));
 
     // Add the selected range area
+    const area1 = d3.area()
+      .x((d) => x(d[0]))
+      .y0(height - margin.bottom)
+      .y1((d) => y(d[1]))
+      .curve(d3.curveBasis);
     const selectedData = data.filter(
-      (d) => d.sigma >= lowerBound && d.sigma <= upperBound,
+      (d) => d[0] >= lowerBound && d[0] <= upperBound,
     );
 
-    g
-      .append("path")
-      .datum(selectedData)
+    g.append("path")
       .attr("fill", "#818cf8")
       .attr("stroke", "none")
-      .attr("d", area1);
+      .attr("d", area1(selectedData));
   }
 
   // Add boundary lines
@@ -128,15 +102,16 @@ export function DistributionChartSvg(
     svg
       .append("text")
       .attr("x", x(value))
-      .attr("y", 0)
+      .attr("y", margin.top - 2)
       .attr("text-anchor", "middle")
       .attr("fill", "#4f46e5")
-      .style("font-size", "12px")
+      .attr("font-size", 10)
+      .attr("font-family", "sans-serif")
       .text(`${value}σ`);
   };
 
   addBoundaryLine(lowerBound);
   addBoundaryLine(upperBound);
 
-  return svg.node()!.outerHTML;
+  return svg.node()!;
 }

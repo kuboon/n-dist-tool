@@ -1,11 +1,6 @@
 import { DistributionChartSvg } from "./DistributionChartSvg.ts";
 import React, { useEffect, useRef } from "react";
 
-interface DataPoint {
-  sigma: number;
-  y: number;
-}
-
 interface DistributionChartProps {
   lowerBound: number;
   upperBound: number;
@@ -19,18 +14,17 @@ export function DistributionChart(
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Set up dimensions
-    // const margin = { top: 40, right: 40, bottom: 40, left: 60 };
-    const width = containerRef.current.clientWidth; // - margin.left - margin.right;
-    const height = containerRef.current.clientHeight; // - margin.top - margin.bottom;
+    const width = containerRef.current.clientWidth;
+    const height = containerRef.current.clientHeight;
 
-    containerRef.current.innerHTML = DistributionChartSvg({
+    const svgElem = DistributionChartSvg({
       document,
       lowerBound,
       upperBound,
       width,
       height,
     });
+    containerRef.current.innerHTML = svgElem.outerHTML;
   });
 
   return (

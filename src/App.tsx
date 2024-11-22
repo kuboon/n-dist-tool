@@ -97,7 +97,7 @@ function App({ params }: { params: DistributionParams }) {
               </div>
               <div className="grid gap-6 md:grid-cols-2">
                 <RangeSlider
-                  label="Lower Bound"
+                  label="下限"
                   value={lowerBound}
                   onChange={setLowerBound}
                   min={-4}
@@ -108,7 +108,7 @@ function App({ params }: { params: DistributionParams }) {
                   validate={(value) => value < upperBound}
                 />
                 <RangeSlider
-                  label="Upper Bound"
+                  label="上限"
                   value={upperBound}
                   onChange={setUpperBound}
                   min={-4}

@@ -1,10 +1,10 @@
 export const bellPoints = (() => {
-  const points = [];
+  const points = [] as [number, number][];
   for (let x = -40; x <= 40; x += 1) {
-    points.push({
-      sigma: Number((x / 10).toFixed(1)),
-      y: normalPDF(x / 10) * 100,
-    });
+    points.push([
+      Number((x / 10).toFixed(1)),
+      normalPDF(x / 10) * 100,
+    ]);
   }
   return points;
 })();
