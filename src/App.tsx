@@ -1,12 +1,14 @@
-import { useState, useMemo, useEffect } from 'react';
+import { DistributionChart } from './components/DistributionChart.tsx';
+import { InfoPanel } from './components/InfoPanel.tsx';
+import { NumberInput } from './components/NumberInput.tsx';
+import { PresetSelector, Preset } from './components/PresetSelector.tsx';
+import { RangeSlider } from './components/RangeSlider.tsx';
+import { saveToHash, type DistributionParams } from './utils/hashSync.ts';
+import { normalCDF } from './utils/statistics.ts';
+import { useDebouncedEffect } from './utils/useDebouncedEffect.ts';
+
+import React, { useState, useMemo } from 'react';
 import { Share2 } from 'lucide-react';
-import { InfoPanel } from './components/InfoPanel';
-import { RangeSlider } from './components/RangeSlider';
-import { DistributionChart } from './components/DistributionChart';
-import { normalPDF, normalCDF } from './utils/statistics';
-import { NumberInput } from './components/NumberInput';
-import { PresetSelector, Preset } from './components/PresetSelector';
-import { saveToHash, type DistributionParams } from './utils/hashSync';
 
 const DISTRIBUTION_PRESETS: Preset[] = [
   { label: 'Standard Normal', mean: 0, stdDev: 1 },
@@ -23,9 +25,9 @@ function App({ params }: { params: DistributionParams }) {
   const [showShareToast, setShowShareToast] = useState(false);
 
   // Save state to URL hash whenever parameters change
-  useEffect(() => {
+  useDebouncedEffect(() => {
     saveToHash({ mean, stdDev, lowerBound, upperBound });
-  }, [mean, stdDev, lowerBound, upperBound]);
+  }, [mean, stdDev, lowerBound, upperBound], 100);
 
   const handlePresetSelect = (preset: Preset) => {
     setMean(preset.mean);
@@ -34,24 +36,13 @@ function App({ params }: { params: DistributionParams }) {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(globalThis.location.href);
       setShowShareToast(true);
       setTimeout(() => setShowShareToast(false), 2000);
     } catch (err) {
       console.error('Failed to copy URL:', err);
     }
   };
-
-  const data = useMemo(() => {
-    const points = [];
-    for (let x = -4; x <= 4; x += 0.1) {
-      points.push({
-        sigma: Number(x.toFixed(1)),
-        y: normalPDF(x),
-      });
-    }
-    return points;
-  }, []);
 
   const cumulativePercentage = useMemo(() => {
     const lowerCDF = normalCDF(lowerBound);
@@ -106,7 +97,7 @@ function App({ params }: { params: DistributionParams }) {
               </div>
               <div className="grid gap-6 md:grid-cols-2">
                 <RangeSlider
-                  label="Lower Bound"
+                  label="下限"
                   value={lowerBound}
                   onChange={setLowerBound}
                   min={-4}
@@ -117,7 +108,7 @@ function App({ params }: { params: DistributionParams }) {
                   validate={(value) => value < upperBound}
                 />
                 <RangeSlider
-                  label="Upper Bound"
+                  label="上限"
                   value={upperBound}
                   onChange={setUpperBound}
                   min={-4}
@@ -139,7 +130,6 @@ function App({ params }: { params: DistributionParams }) {
             </div>
 
             <DistributionChart
-              data={data}
               lowerBound={lowerBound}
               upperBound={upperBound}
             />
