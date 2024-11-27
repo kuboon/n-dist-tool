@@ -16,6 +16,7 @@ export function DistributionChartSvg(
   const margin = { top: 40, right: 40, bottom: 40, left: 60 };
 
   const svg = d3.select(document.createElement("svg"))
+    .attr("xmlns", "http://www.w3.org/2000/svg")
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
