@@ -13,7 +13,7 @@ export default defineConfig({
     vercel(),
     viteStaticCopy({
       targets: [
-        { dest, src: '_api/_*.wasm' },
+        { dest, src: 'node_modules/svg2png-wasm/svg2png_wasm_bg.wasm' },
         { dest, src: '_api/_*.ttf' }
       ],
     })

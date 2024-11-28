@@ -4,9 +4,12 @@ export interface Preset {
   label: string;
   mean: number;
   stdDev: number;
+  lowerBound?: number;
+  upperBound?: number;
 }
 
 interface PresetSelectorProps {
+  label: string;
   presets: Preset[];
   onSelect: (preset: Preset) => void;
   currentMean: number;
@@ -14,6 +17,7 @@ interface PresetSelectorProps {
 }
 
 export function PresetSelector({
+  label,
   presets,
   onSelect,
   currentMean,
@@ -29,7 +33,7 @@ export function PresetSelector({
   return (
     <div>
       <label className="block text-gray-700 font-medium mb-2">
-        プリセット
+        {label}
       </label>
       <select
         value={getCurrentValue()}

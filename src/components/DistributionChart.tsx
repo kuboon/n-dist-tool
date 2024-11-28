@@ -1,4 +1,4 @@
-import { DistributionChartSvg } from "./DistributionChartSvg.ts";
+import { DistributionChartSvg } from "../utils/DistributionChartSvg.ts";
 import React, { useEffect, useRef } from "react";
 
 interface DistributionChartProps {
@@ -24,6 +24,8 @@ export function DistributionChart(
       width,
       height,
     });
+    // const doc = new DOMParser().parseFromString(svgElem.outerHTML, "image/svg+xml");
+    // document.body.appendChild(doc.lastChild!);
     containerRef.current.innerHTML = svgElem.outerHTML;
   });
 

@@ -1,4 +1,4 @@
-import { bellPoints } from "../utils/statistics.ts";
+import { bellPoints, normalCDF } from "./statistics.ts";
 import * as d3 from "d3";
 
 interface DistributionChartProps {
@@ -13,12 +13,29 @@ export function DistributionChartSvg(
   { document, lowerBound, upperBound, width, height }: DistributionChartProps,
 ) {
   // Set up dimensions
-  const margin = { top: 40, right: 40, bottom: 40, left: 60 };
+  width = 300
+  height = 200
+  const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  const ratio = 3 / 2;
+  if (width > height * ratio) {
+    margin.left += (width - height * ratio) / 2;
+    margin.right += (width - height * ratio) / 2;
+  } else {
+    margin.top += (height - width / ratio) / 2;
+    margin.bottom += (height - width / ratio) / 2;
+  }
+
+  const lowerCDF = normalCDF(lowerBound);
+  const upperCDF = normalCDF(upperBound);
+  const cumulativePercentage = ((upperCDF - lowerCDF) * 100).toFixed(2);
+
 
   const svg = d3.select(document.createElement("svg"))
     .attr("xmlns", "http://www.w3.org/2000/svg")
     .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto;");
+    .attr("style", "width: 100%; height: 100%;")
+    .attr("font-size", 10)
+    .attr("font-family", "sans-serif")
 
   const chartW = width - margin.left - margin.right;
   const chartH = height - margin.top - margin.bottom;
@@ -89,6 +106,12 @@ export function DistributionChartSvg(
       .attr("fill", "#818cf8")
       .attr("stroke", "none")
       .attr("d", area1(selectedData));
+    g.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", x(0))
+      .attr("y", y(25))
+      .style("font-size", "300%")
+      .text(cumulativePercentage + "%")
   }
 
   // Add boundary lines
@@ -106,8 +129,6 @@ export function DistributionChartSvg(
       .attr("y", margin.top - 2)
       .attr("text-anchor", "middle")
       .attr("fill", "#4f46e5")
-      .attr("font-size", 10)
-      .attr("font-family", "sans-serif")
       .text(`${value}σ`);
   };
 

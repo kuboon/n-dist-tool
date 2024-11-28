@@ -4,14 +4,13 @@ import { NumberInput } from './components/NumberInput.tsx';
 import { PresetSelector, Preset } from './components/PresetSelector.tsx';
 import { RangeSlider } from './components/RangeSlider.tsx';
 import { saveToHash, type DistributionParams } from './utils/hashSync.ts';
-import { normalCDF } from './utils/statistics.ts';
 import { useDebouncedEffect } from './utils/useDebouncedEffect.ts';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Share2 } from 'lucide-react';
 
 const DISTRIBUTION_PRESETS: Preset[] = [
-  { label: 'Standard Normal', mean: 0, stdDev: 1 },
+  { label: '標準正規分布', mean: 0, stdDev: 1 },
   { label: '偏差値', mean: 50, stdDev: 10 },
   { label: 'IQ (ウェクスラー)', mean: 100, stdDev: 15 },
 ];
@@ -32,6 +31,8 @@ function App({ params }: { params: DistributionParams }) {
   const handlePresetSelect = (preset: Preset) => {
     setMean(preset.mean);
     setStdDev(preset.stdDev);
+    if (preset.lowerBound) setLowerBound(preset.lowerBound);
+    if (preset.upperBound) setUpperBound(preset.upperBound)
   };
 
   const handleShare = async () => {
@@ -43,12 +44,6 @@ function App({ params }: { params: DistributionParams }) {
       console.error('Failed to copy URL:', err);
     }
   };
-
-  const cumulativePercentage = useMemo(() => {
-    const lowerCDF = normalCDF(lowerBound);
-    const upperCDF = normalCDF(upperBound);
-    return ((upperCDF - lowerCDF) * 100).toFixed(2);
-  }, [lowerBound, upperBound]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -74,6 +69,7 @@ function App({ params }: { params: DistributionParams }) {
             <div className="grid grid-cols-1 gap-6 mb-8">
               <div className="space-y-6">
                 <PresetSelector
+                  label="平均・偏差"
                   presets={DISTRIBUTION_PRESETS}
                   onSelect={handlePresetSelect}
                   currentMean={mean}
@@ -121,14 +117,6 @@ function App({ params }: { params: DistributionParams }) {
               </div>
             </div>
 
-            <div className="text-center mb-8">
-              <div className="inline-block px-6 py-3 bg-indigo-50 rounded-full">
-                <span className="text-lg font-semibold text-indigo-700">
-                  Probability: {cumulativePercentage}%
-                </span>
-              </div>
-            </div>
-
             <DistributionChart
               lowerBound={lowerBound}
               upperBound={upperBound}
@@ -136,11 +124,10 @@ function App({ params }: { params: DistributionParams }) {
 
             {/* Share Toast */}
             <div
-              className={`fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-200 ${
-                showShareToast
-                  ? 'translate-y-0 opacity-100'
-                  : 'translate-y-8 opacity-0'
-              }`}
+              className={`fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-200 ${showShareToast
+                ? 'translate-y-0 opacity-100'
+                : 'translate-y-8 opacity-0'
+                }`}
             >
               URL copied to clipboard!
             </div>

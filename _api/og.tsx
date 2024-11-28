@@ -1,7 +1,7 @@
-import { DistributionChartSvg } from '../src/components/DistributionChartSvg';
+import { DistributionChartSvg } from '../src/utils/DistributionChartSvg.ts';
 import { parseHTML } from 'linkedom';
-import { initialize, svg2png, } from 'svg2png-wasm';
-import wasm from './_svg2png_wasm_bg.wasm'
+import { initialize, svg2png } from 'svg2png-wasm';
+import wasm from './svg2png_wasm_bg.wasm'
 
 export const edge = true;
 
