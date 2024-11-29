@@ -11,9 +11,10 @@ export function DistributionChartSvg(
   { document, lowerBound, upperBound }: DistributionChartProps,
 ) {
   // Set up dimensions
-  const width = 300
-  const height = 200
-  const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  const width = 320
+  const height = 180
+  const margin = { top: 20, right: 60, bottom: 20, left: 60 };
+
 
   const lowerCDF = normalCDF(lowerBound);
   const upperCDF = normalCDF(upperBound);
@@ -96,12 +97,6 @@ export function DistributionChartSvg(
       .attr("fill", "#818cf8")
       .attr("stroke", "none")
       .attr("d", area1(selectedData));
-    g.append("text")
-      .attr("text-anchor", "middle")
-      .attr("x", x(0))
-      .attr("y", y(25))
-      .style("font-size", "300%")
-      .text(cumulativePercentage + "%")
   }
 
   // Add boundary lines
@@ -124,6 +119,14 @@ export function DistributionChartSvg(
 
   addBoundaryLine(lowerBound);
   addBoundaryLine(upperBound);
+
+  svg.append("text")
+  .attr("text-anchor", "middle")
+  .attr("x", x(0))
+  .attr("y", y(22))
+  .attr("stroke", "#fff")
+  .style("font-size", "300%")
+  .text(cumulativePercentage + "%")
 
   return { svgElem: svg.node()!, x };
 }

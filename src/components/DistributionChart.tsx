@@ -33,16 +33,18 @@ export function DistributionChart(
       svgElem.appendChild(elem);
 
       const matrix = elem.getScreenCTM()!.inverse();
-      elem.addEventListener("mousemove", (e) => {
-        const pointX = new DOMPointReadOnly(e.clientX, e.clientY).matrixTransform(matrix).x;
-        if (e.buttons == 1) { onDrag(x.invert(pointX)); }
-      });
+      const callOnDrag = (xy: { clientX: number, clientY: number }) => {
+        const pointX = new DOMPointReadOnly(xy.clientX, xy.clientY).matrixTransform(matrix).x;
+        onDrag(x.invert(pointX));
+      }
+      elem.addEventListener("mousemove", (e) => { callOnDrag(e); });
+      elem.addEventListener("touchmove", (e) => { callOnDrag(e.targetTouches[0]); });
     }
   });
 
   return (
     <div
-      className="h-80 w-full bg-white rounded-lg border border-gray-100 relative select-none"
+      className="w-full bg-white rounded-lg border border-gray-100 relative select-none"
       ref={containerRef}
     />
   );

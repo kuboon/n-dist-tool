@@ -9,9 +9,12 @@ import { useDebouncedEffect } from './utils/useDebouncedEffect.ts';
 import React, { useState } from 'react';
 import { Share2 } from 'lucide-react';
 
+const round = (x: number, n: number) => Math.round(x * 10 ** n) / 10 ** n;
+
 const DISTRIBUTION_PRESETS: Preset[] = [
   { label: '偏差値', mean: 50, stdDev: 10 },
-  { label: 'IQ (ウェクスラー)', mean: 100, stdDev: 15 },
+  { label: 'IQ (SD15)', mean: 100, stdDev: 15 },
+  { label: 'IQ (SD24)', mean: 100, stdDev: 24 },
 ];
 
 function App({ params }: { params: DistributionParams }) {
@@ -62,14 +65,14 @@ function App({ params }: { params: DistributionParams }) {
               onDrag={(x) => {
                 // 近い方を動かす
                 const center = (lowerBound + upperBound) / 2
-                x = Math.round(x * 10) / 10
+                x = round(x, 1)
                 if (x < center) setLowerBound(x)
                 else setUpperBound(x)
               }}
             />
 
-            <div className="grid grid-cols-1 gap-6 mb-8">
-              <div className="grid gap-6 grid-cols-2">
+            <div className="grid grid-cols-[2fr,1fr,2fr] gap-6 mb-8 text-center">
+              <div className="grid grid-cols-subgrid col-span-3">
                 <RangeSlider
                   label="下限"
                   value={lowerBound}
@@ -79,6 +82,7 @@ function App({ params }: { params: DistributionParams }) {
                   step={0.1}
                   validate={(value) => value < upperBound}
                 />
+                <div className='grid-flow-dense'/>
                 <RangeSlider
                   label="上限"
                   value={upperBound}
@@ -90,12 +94,12 @@ function App({ params }: { params: DistributionParams }) {
                 />
               </div>
               {DISTRIBUTION_PRESETS.map((x, i) => {
-                const low = x.mean + x.stdDev * lowerBound
-                const up = x.mean + x.stdDev * upperBound
-                return <div className='grid gap-6 grid-cols-3' style={{ textAlign: "center" }} key={i}>
-                  <div key='low'>{low}</div>
+                const low = round(x.mean + x.stdDev * lowerBound, 1)
+                const up = x.mean + round(x.stdDev * upperBound, 1)
+                return <div className='grid grid-cols-subgrid col-span-3' key={i}>
+                  <div key='low' className='place-content-center'>{low}</div>
                   <div key='label'>{x.label}</div>
-                  <div key='up'>{up}</div>
+                  <div key='up' className='place-content-center'>{up}</div>
                 </div>
               })}
             </div>

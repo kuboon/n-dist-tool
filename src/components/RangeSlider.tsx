@@ -20,7 +20,7 @@ export function RangeSlider({ label, value, onChange, min, max, step, validate }
 
   return (
     <div className="space-y-4">
-      <label className="block">
+      <label className="block text-center">
         <span className="text-gray-700 font-medium">{label}: {value}σ</span>
         <input
           type="range"
