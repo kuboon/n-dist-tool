@@ -17,9 +17,17 @@ const DISTRIBUTION_PRESETS: Preset[] = [
   { label: 'IQ (SD24)', mean: 100, stdDev: 24 },
 ];
 
+const inRange = (f: (x: number) => void, min: number, max: number) => (x: number) => {
+  if (x < min) f(min)
+  else if (x > max) f(max)
+  else f(x)
+}
+
 function App({ params }: { params: DistributionParams }) {
-  const [lowerBound, setLowerBound] = useState(params.lowerBound);
-  const [upperBound, setUpperBound] = useState(params.upperBound);
+  const [lowerBound, setLowerBound_] = useState(params.lowerBound);
+  const setLowerBound = inRange(setLowerBound_, -4, 4)
+  const [upperBound, setUpperBound_] = useState(params.upperBound);
+  const setUpperBound = inRange(setUpperBound_, -4, 4)
   const [showInfo, setShowInfo] = useState(false);
   const [showShareToast, setShowShareToast] = useState(false);
 

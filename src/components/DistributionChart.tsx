@@ -37,7 +37,7 @@ export function DistributionChart(
         const pointX = new DOMPointReadOnly(xy.clientX, xy.clientY).matrixTransform(matrix).x;
         onDrag(x.invert(pointX));
       }
-      elem.addEventListener("mousemove", (e) => { callOnDrag(e); });
+      elem.addEventListener("mousemove", (e) => { if (e.buttons == 1) callOnDrag(e); });
       elem.addEventListener("touchmove", (e) => { callOnDrag(e.targetTouches[0]); });
     }
   });
