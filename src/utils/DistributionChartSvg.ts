@@ -2,35 +2,25 @@ import { bellPoints, normalCDF } from "./statistics.ts";
 import * as d3 from "d3";
 
 interface DistributionChartProps {
-  document: { createElement: (tagName: string) => HTMLElement };
+  document: { createElementNS: (tagName: 'http://www.w3.org/2000/svg', ns: string) => HTMLElement };
   lowerBound: number;
   upperBound: number;
-  width: number;
-  height: number;
 }
 
 export function DistributionChartSvg(
-  { document, lowerBound, upperBound, width, height }: DistributionChartProps,
+  { document, lowerBound, upperBound }: DistributionChartProps,
 ) {
   // Set up dimensions
-  width = 300
-  height = 200
+  const width = 300
+  const height = 200
   const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  const ratio = 3 / 2;
-  if (width > height * ratio) {
-    margin.left += (width - height * ratio) / 2;
-    margin.right += (width - height * ratio) / 2;
-  } else {
-    margin.top += (height - width / ratio) / 2;
-    margin.bottom += (height - width / ratio) / 2;
-  }
 
   const lowerCDF = normalCDF(lowerBound);
   const upperCDF = normalCDF(upperBound);
   const cumulativePercentage = ((upperCDF - lowerCDF) * 100).toFixed(2);
 
-
-  const svg = d3.select(document.createElement("svg"))
+  const rootElem = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const svg = d3.select(rootElem)
     .attr("xmlns", "http://www.w3.org/2000/svg")
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "width: 100%; height: 100%;")
@@ -135,5 +125,5 @@ export function DistributionChartSvg(
   addBoundaryLine(lowerBound);
   addBoundaryLine(upperBound);
 
-  return svg.node()!;
+  return { svgElem: svg.node()!, x };
 }

@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 import { Share2 } from 'lucide-react';
 
 const DISTRIBUTION_PRESETS: Preset[] = [
-  { label: '標準正規分布', mean: 0, stdDev: 1 },
   { label: '偏差値', mean: 50, stdDev: 10 },
   { label: 'IQ (ウェクスラー)', mean: 100, stdDev: 15 },
 ];
@@ -18,22 +17,13 @@ const DISTRIBUTION_PRESETS: Preset[] = [
 function App({ params }: { params: DistributionParams }) {
   const [lowerBound, setLowerBound] = useState(params.lowerBound);
   const [upperBound, setUpperBound] = useState(params.upperBound);
-  const [mean, setMean] = useState(params.mean);
-  const [stdDev, setStdDev] = useState(params.stdDev);
   const [showInfo, setShowInfo] = useState(false);
   const [showShareToast, setShowShareToast] = useState(false);
 
   // Save state to URL hash whenever parameters change
   useDebouncedEffect(() => {
-    saveToHash({ mean, stdDev, lowerBound, upperBound });
-  }, [mean, stdDev, lowerBound, upperBound], 100);
-
-  const handlePresetSelect = (preset: Preset) => {
-    setMean(preset.mean);
-    setStdDev(preset.stdDev);
-    if (preset.lowerBound) setLowerBound(preset.lowerBound);
-    if (preset.upperBound) setUpperBound(preset.upperBound)
-  };
+    saveToHash({ lowerBound, upperBound });
+  }, [lowerBound, upperBound], 100);
 
   const handleShare = async () => {
     try {
@@ -66,32 +56,20 @@ function App({ params }: { params: DistributionParams }) {
               </div>
             </div>
 
+            <DistributionChart
+              lowerBound={lowerBound}
+              upperBound={upperBound}
+              onDrag={(x) => {
+                // 近い方を動かす
+                const center = (lowerBound + upperBound) / 2
+                x = Math.round(x * 10) / 10
+                if (x < center) setLowerBound(x)
+                else setUpperBound(x)
+              }}
+            />
+
             <div className="grid grid-cols-1 gap-6 mb-8">
-              <div className="space-y-6">
-                <PresetSelector
-                  label="平均・偏差"
-                  presets={DISTRIBUTION_PRESETS}
-                  onSelect={handlePresetSelect}
-                  currentMean={mean}
-                  currentStdDev={stdDev}
-                />
-                <div className="grid gap-6 md:grid-cols-2">
-                  <NumberInput
-                    label="平均 Mean (μ)"
-                    value={mean}
-                    onChange={setMean}
-                    step={1}
-                  />
-                  <NumberInput
-                    label="標準偏差 Standard Deviation (σ)"
-                    value={stdDev}
-                    onChange={setStdDev}
-                    min={0.1}
-                    step={0.1}
-                  />
-                </div>
-              </div>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 grid-cols-2">
                 <RangeSlider
                   label="下限"
                   value={lowerBound}
@@ -99,8 +77,6 @@ function App({ params }: { params: DistributionParams }) {
                   min={-4}
                   max={4}
                   step={0.1}
-                  mean={mean}
-                  stdDev={stdDev}
                   validate={(value) => value < upperBound}
                 />
                 <RangeSlider
@@ -110,17 +86,19 @@ function App({ params }: { params: DistributionParams }) {
                   min={-4}
                   max={4}
                   step={0.1}
-                  mean={mean}
-                  stdDev={stdDev}
                   validate={(value) => value > lowerBound}
                 />
               </div>
+              {DISTRIBUTION_PRESETS.map((x, i) => {
+                const low = x.mean + x.stdDev * lowerBound
+                const up = x.mean + x.stdDev * upperBound
+                return <div className='grid gap-6 grid-cols-3' style={{ textAlign: "center" }} key={i}>
+                  <div key='low'>{low}</div>
+                  <div key='label'>{x.label}</div>
+                  <div key='up'>{up}</div>
+                </div>
+              })}
             </div>
-
-            <DistributionChart
-              lowerBound={lowerBound}
-              upperBound={upperBound}
-            />
 
             {/* Share Toast */}
             <div

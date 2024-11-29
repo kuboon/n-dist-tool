@@ -7,24 +7,21 @@ interface RangeSliderProps {
   min: number;
   max: number;
   step: number;
-  mean: number;
-  stdDev: number;
   validate?: (value: number) => boolean;
 }
 
-export function RangeSlider({ label, value, onChange, min, max, step, mean, stdDev, validate }: RangeSliderProps) {
+export function RangeSlider({ label, value, onChange, min, max, step, validate }: RangeSliderProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(e.target.value);
     if (!validate || validate(newValue)) {
       onChange(newValue);
     }
   };
-  const calcValue = mean + stdDev * value
 
   return (
     <div className="space-y-4">
       <label className="block">
-        <span className="text-gray-700 font-medium">{label}: {calcValue} [{value}σ]</span>
+        <span className="text-gray-700 font-medium">{label}: {value}σ</span>
         <input
           type="range"
           min={min}

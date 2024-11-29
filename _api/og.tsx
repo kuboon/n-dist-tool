@@ -24,9 +24,7 @@ export async function GET(request: Request) {
     document,
     lowerBound,
     upperBound,
-    width,
-    height,
-  }).outerHTML;
+  }).svgElem.outerHTML;
 
   const png = await svg2png(svgStr, {
     width,
