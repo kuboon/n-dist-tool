@@ -27,8 +27,6 @@ export async function GET(request: Request) {
   }).svgElem.outerHTML;
 
   const png = await svg2png(svgStr, {
-    width,
-    height,
     fonts: [fontBuf],
     defaultFontFamily: {
       sansSerifFamily: 'Roboto',
@@ -37,6 +35,7 @@ export async function GET(request: Request) {
       fantasyFamily: 'Roboto',
       monospaceFamily: 'Roboto',
     },
+    scale: 4,
   });
 
   return new Response(png, {

@@ -11,8 +11,8 @@ export function DistributionChartSvg(
   { document, lowerBound, upperBound }: DistributionChartProps,
 ) {
   // Set up dimensions
-  const width = 320
-  const height = 180
+  const width = 300
+  const height = 157;
   const margin = { top: 20, right: 60, bottom: 20, left: 60 };
 
 
