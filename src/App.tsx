@@ -3,7 +3,7 @@ import { InfoPanel } from './components/InfoPanel.tsx';
 import { NumberInput } from './components/NumberInput.tsx';
 import { PresetSelector, Preset } from './components/PresetSelector.tsx';
 import { RangeSlider } from './components/RangeSlider.tsx';
-import { saveToHash, type DistributionParams } from './utils/hashSync.ts';
+import { saveToQueryStr, type DistributionParams } from './utils/queryStrSync.ts';
 import { useDebouncedEffect } from './utils/useDebouncedEffect.ts';
 
 import React, { useState } from 'react';
@@ -22,7 +22,7 @@ function App({ params }: { params: DistributionParams }) {
 
   // Save state to URL hash whenever parameters change
   useDebouncedEffect(() => {
-    saveToHash({ lowerBound, upperBound });
+    saveToQueryStr({ lowerBound, upperBound });
   }, [lowerBound, upperBound], 100);
 
   const handleShare = async () => {

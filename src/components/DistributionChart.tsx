@@ -34,7 +34,7 @@ export function DistributionChart(
 
       const matrix = elem.getScreenCTM()!.inverse();
       elem.addEventListener("mousemove", (e) => {
-        const pointX = new DOMPoint(e.clientX, e.clientY).matrixTransform(matrix).x;
+        const pointX = new DOMPointReadOnly(e.clientX, e.clientY).matrixTransform(matrix).x;
         if (e.buttons == 1) { onDrag(x.invert(pointX)); }
       });
     }

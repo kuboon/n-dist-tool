@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/d3": "7.4.3",
+    "@vercel/edge": "^1.1.2",
     "d3": "^7.9.0",
     "linkedom": "^0.16.8",
     "lucide-react": "^0.344.0",

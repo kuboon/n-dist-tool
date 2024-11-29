@@ -3,17 +3,17 @@ export interface DistributionParams {
   upperBound: number;
 }
 
-export function saveToHash(params: DistributionParams): void {
+export function saveToQueryStr(params: DistributionParams): void {
   const str = new URLSearchParams(params as never);
-  globalThis.history.replaceState(null, '', `#${str}`);
+  globalThis.history.replaceState(null, '', `?${str}`);
 }
 
-export function loadFromHash(): DistributionParams | null {
+export function loadFromQueryStr(): DistributionParams | null {
   try {
-    const hash = globalThis.location.hash.slice(1);
-    if (!hash) return null;
+    const qs = globalThis.location.search.slice(1);
+    if (!qs) return null;
 
-    const params_ = new URLSearchParams(hash);
+    const params_ = new URLSearchParams(qs);
     const params: DistributionParams = {
       lowerBound: parseInt(params_.get('lowerBound')!),
       upperBound: parseInt(params_.get('upperBound')!),
