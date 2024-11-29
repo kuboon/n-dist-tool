@@ -7,8 +7,6 @@ import './index.css';
 
 // Load initial state from URL hash
 const params = loadFromQueryStr() || {
-  mean: 0,
-  stdDev: 1,
   lowerBound: -1,
   upperBound: 1
 };

@@ -15,8 +15,8 @@ export async function GET(request: Request) {
   const fontBuf = await initPromise
 
   const { searchParams } = new URL(request.url);
-  const lowerBound = parseFloat(searchParams.get('lowerBound') || '-1');
-  const upperBound = parseFloat(searchParams.get('upperBound') || '1');
+  const lowerBound = parseFloat(searchParams.get('lowerBound')!) || -1;
+  const upperBound = parseFloat(searchParams.get('upperBound')!) || 1;
   const width = 1200
   const height = 630
   const { document } = parseHTML("<body></body>");
